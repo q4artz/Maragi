@@ -10,6 +10,8 @@ namespace TeamServer.Modules
         // Unique Property for HttpListener
         public int BindPort { get;}
 
+        private CancellationTokenSource _tokenSource;
+
         public HttpListener(string name, int bindPort) {
             Name = name;
             BindPort = bindPort;
@@ -29,7 +31,11 @@ namespace TeamServer.Modules
             
             var host = HostBuilder.Build();
 
-            host.RunAsync();
+            _tokenSource = new CancellationTokenSource();
+
+            // takes cancelation token
+            // Run for as long as token is not cancelled
+            host.RunAsync(_tokenSource.Token);
         }
 
         private void configureServices(IServiceCollection services)
@@ -51,7 +57,7 @@ namespace TeamServer.Modules
 
         public override void Stop()
         {
-            throw new NotImplementedException();
+            _tokenSource.Cancel();
         }
     }
 }
