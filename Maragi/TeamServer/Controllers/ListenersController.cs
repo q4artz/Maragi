@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
+﻿using ApiModels.Requests;
+using Microsoft.AspNetCore.Mvc;
+using TeamServer.Modules;
 using TeamServer.Services;
 
 namespace TeamServer.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public class ListenersController : ControllerBase
     {
         // write API to interact with Listener Service
@@ -34,6 +36,25 @@ namespace TeamServer.Controllers
             if (listener is null) return NotFound();
             
             return Ok(listener);
+        }
+
+        [HttpPost]
+        public IActionResult StartListener([FromBody] StartHttpListenerRequest request) 
+        {
+            // Remove Using System.Net; Add using TeamServer.Modules;
+            var listener = new HttpListener(request.Name, request.BindPort);
+            
+            listener.Start();
+
+            _listeners.AddListener(listener);
+
+
+            // Host == IP addr of the TeamServer 
+            // Path == Route of the Controller
+            var root = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}";
+            var path = $"{root}/{listener.Name}";
+
+            return Created(path, listener);
         }
     }
 }
