@@ -433,9 +433,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\code\\Maragi\\TeamServer\\TeamServer.csproj",
-      "projectName": "TeamServer",
-      "projectPath": "C:\\code\\Maragi\\TeamServer\\TeamServer.csproj",
+      "projectUniqueName": "C:\\code\\Maragi\\TeamServer\\Maragi.csproj",
+      "projectName": "Maragi",
+      "projectPath": "C:\\code\\Maragi\\TeamServer\\Maragi.csproj",
       "packagesPath": "C:\\Users\\me\\.nuget\\packages\\",
       "outputPath": "C:\\code\\Maragi\\TeamServer\\obj\\",
       "projectStyle": "PackageReference",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "h9gMyE72D0A=",
+  "dgSpecHash": "ukxmKQQ1xtg=",
   "success": true,
-  "projectFilePath": "C:\\code\\Maragi\\TeamServer\\TeamServer.csproj",
+  "projectFilePath": "C:\\code\\Maragi\\TeamServer\\Maragi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\me\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\me\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
