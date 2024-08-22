@@ -1,1 +1,1 @@
-Project is a work in progress.
+Project is still a work in progress.
