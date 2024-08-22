@@ -27,7 +27,10 @@ namespace Maragi_Framework
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Maragi_Framework", Version = "v1" });
             });
+
+            // add this for the API to work
             services.AddSingleton<IListenerService, ListenerService>();
+            services.AddSingleton<IAgentService, AgentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
