@@ -11,10 +11,12 @@ namespace Maragi_Framework.Controllers
     {
         // write API to interact with Listener Service
         private readonly IListenerService _listeners;
+        private readonly IAgentService _agentService;
 
-        public ListenersController(IListenerService listeners)
+        public ListenersController(IListenerService listeners, IAgentService agentService)
         {
             _listeners = listeners;
+            this._agentService = agentService;
         }
 
         [HttpGet]
@@ -41,6 +43,7 @@ namespace Maragi_Framework.Controllers
         {
             // Remove Using System.Net; Add using TeamServer.Modules;
             var listener = new HttpListener(request.Name, request.BindPort);
+            listener.Init(_agentService);
             listener.Start();
 
             _listeners.AddListener(listener);
