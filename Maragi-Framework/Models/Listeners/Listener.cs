@@ -1,7 +1,7 @@
 ﻿using Maragi_Framework.Services;
 using System.Threading.Tasks;
 
-namespace Maragi_Framework.Models
+namespace Maragi_Framework.Models.Listeners
 {
     public abstract class Listener
     {

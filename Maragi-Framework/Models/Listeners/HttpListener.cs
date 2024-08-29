@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Maragi_Framework.Models
+namespace Maragi_Framework.Models.Listeners
 {
     public class HttpListener : Listener
     {

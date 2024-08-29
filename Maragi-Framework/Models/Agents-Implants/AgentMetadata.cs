@@ -1,4 +1,4 @@
-﻿namespace Maragi_Framework.Models
+﻿namespace Maragi_Framework.Models.Agent_Implants
 {
     public class AgentMetadata
     {
