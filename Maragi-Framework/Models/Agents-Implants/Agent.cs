@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Maragi_Framework.Models.Agent_Implants
 {
@@ -14,6 +15,8 @@ namespace Maragi_Framework.Models.Agent_Implants
         // Queue but thread safe
         // EXP -- Agent checkin and Tasking at the same time won't break things -- using Quaue might break
         private readonly ConcurrentQueue<AgentTask> _pendingTasks = new();
+
+        private readonly List<AgentTaskResult> _taskResults = new();
 
         // Constructing Agent / Implant
         public Agent(AgentMetadata metadata) 
@@ -41,6 +44,16 @@ namespace Maragi_Framework.Models.Agent_Implants
                 tasks.Add(task);
             }
             return tasks;
+        }
+
+        public AgentTaskResult GetTaskResult(string taskId) 
+        {
+            return GetTaskResults().FirstOrDefault(r => r.Id.Equals(taskId));
+        }
+
+        public IEnumerable<AgentTaskResult> GetTaskResults()
+        {
+            return _taskResults;
         }
     }
 }

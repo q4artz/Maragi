@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text;
-using Newtonsoft.Json;
+using Newtonsoft.Json; // Use nuget pkgm to download this 
 
 
 namespace Maragi_Framework.Models.Listeners
@@ -35,7 +35,9 @@ namespace Maragi_Framework.Models.Listeners
 
             var tasks = agent.GetPendingtask();
 
-            return Ok("Listener Works");
+            // automatically gets serialize as JSON
+            // might want to futher develop to disguse this in a http request
+            return Ok(tasks);
         }
 
         // How do TeamServer know what it is interaccting with (defender , web scapper , external tools)

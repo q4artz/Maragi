@@ -1,5 +1,5 @@
 ﻿using Maragi_Framework.Services;
-using Maragi_Framework.Models;
+using Maragi_Framework.Models.Listeners;
 using Microsoft.AspNetCore.Mvc;
 using ApiModels.Requests;
 
