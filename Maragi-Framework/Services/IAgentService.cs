@@ -1,4 +1,4 @@
-﻿using Maragi_Framework.Models;
+﻿using Maragi_Framework.Models.Agent_Implants;
 using System.Collections.Generic;
 using System.Linq;
 
