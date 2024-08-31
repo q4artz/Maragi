@@ -33,6 +33,8 @@ namespace Maragi_Framework.Models.Listeners
                 _agents.AddAgent(agent);
             }
 
+            agent.CheckIn();
+
             var tasks = agent.GetPendingtask();
 
             // automatically gets serialize as JSON
@@ -48,7 +50,7 @@ namespace Maragi_Framework.Models.Listeners
                 return null;
 
             // header is going to say Authorization: Bearer <content>
-            encodedMetadata = encodedMetadata.ToString().Substring(0, 7);
+            encodedMetadata = encodedMetadata.ToString().Remove(0, 7);
 
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedMetadata));
 
