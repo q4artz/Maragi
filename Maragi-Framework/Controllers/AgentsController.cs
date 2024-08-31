@@ -35,7 +35,7 @@ namespace Maragi_Framework.Controllers
 
         // For if only called task
         [HttpGet("{agentId}/tasks")]
-        public IActionResult GetTaskResults(string agentId, string taskId)
+        public IActionResult GetTaskResults(string agentId)
         {
             var agent = _agents.GetAgent(agentId);
             if (agent is null) return NotFound("Agent Not Found");

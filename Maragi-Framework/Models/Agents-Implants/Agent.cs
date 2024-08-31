@@ -55,5 +55,10 @@ namespace Maragi_Framework.Models.Agent_Implants
         {
             return _taskResults;
         }
+
+        public void AddTaskResults(IEnumerable<AgentTaskResult> results)
+        {
+            _taskResults.AddRange(results);
+        }
     }
 }
